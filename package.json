@@ -9,8 +9,7 @@
   "author": "saber2pr",
   "license": "MIT",
   "files": [
-    "lib/index.*",
-    "src/index.*"
+    "lib/index.*"
   ],
   "scripts": {
     "start": "tsc -w"
