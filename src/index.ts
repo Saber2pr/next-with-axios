@@ -15,19 +15,24 @@ export interface Props<T = any> {
 export interface ParsedUrlQuery extends Props<string | string[]> {}
 
 export type AxiosHandler<P extends Props = Props> = (
-  request: AxiosInstance,
+  axios: AxiosInstance,
   ctx: GetServerSidePropsContext<ParsedUrlQuery>
 ) => P | Promise<P>
 
-export type withAxios = <P>(handler: AxiosHandler<P>) => GetServerSideProps<P>
+export type AxiosMonad = <P>(handler: AxiosHandler<P>) => GetServerSideProps<P>
 
-export type handleCtx = <P>(
+export type AxiosEffect = <P>(
   handler: AxiosHandler<P>,
   ctx: GetServerSidePropsContext<ParsedUrlQuery>
 ) => Promise<GetServerSidePropsResult<P>>
 
-export const createWithAxios = (handleCtx: handleCtx): withAxios => (
+export const createAxiosMonad = (effect: AxiosEffect): AxiosMonad => (
   handler
-) => async (ctx) => handleCtx(handler, ctx)
+) => async (ctx) => effect(handler, ctx)
 
-export default createWithAxios
+export type JoinAxiosMonad = (AxiosMonad: AxiosMonad) => AxiosEffect
+
+export const fmap = (join: JoinAxiosMonad) => (AxiosMonad: AxiosMonad) =>
+  createAxiosMonad((handler, ctx) => join(AxiosMonad)(handler, ctx))
+
+export default createAxiosMonad
