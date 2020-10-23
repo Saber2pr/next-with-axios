@@ -33,6 +33,6 @@ export const createAxiosMonad = (effect: AxiosEffect): AxiosMonad => (
 export type JoinAxiosMonad = (AxiosMonad: AxiosMonad) => AxiosEffect
 
 export const fmap = (join: JoinAxiosMonad) => (AxiosMonad: AxiosMonad) =>
-  createAxiosMonad((handler, ctx) => join(AxiosMonad)(handler, ctx))
+  createAxiosMonad(join(AxiosMonad))
 
 export default createAxiosMonad
