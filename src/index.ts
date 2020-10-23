@@ -26,9 +26,9 @@ export type AxiosEffect = <P>(
   ctx: GetServerSidePropsContext<ParsedUrlQuery>
 ) => Promise<GetServerSidePropsResult<P>>
 
-export const createAxiosMonad = (effect: AxiosEffect): AxiosMonad => (
-  handler
-) => async (ctx) => effect(handler, ctx)
+export const createAxiosMonad = (
+  effect: AxiosEffect
+): AxiosMonad => handler => ctx => effect(handler, ctx)
 
 export type JoinAxiosMonad = (AxiosMonad: AxiosMonad) => AxiosEffect
 
