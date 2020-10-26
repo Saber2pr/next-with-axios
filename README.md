@@ -22,7 +22,7 @@ const AxiosMonad = createAxiosMonad(async (handler, ctx) => {
   }
 })
 
-const withRedirect = fmap((withAxios) => (handler, ctx) => {
+const withRedirect = fmap(withAxios => (handler, ctx) => {
   const url = ctx.req.url
   if (url === '/index') {
     ctx.res.writeHead(302, {
@@ -31,7 +31,19 @@ const withRedirect = fmap((withAxios) => (handler, ctx) => {
     ctx.res.end()
   }
   return withAxios(handler)(ctx)
-})(AxiosMonad)
+})
+
+const withAxios = withRedirect(AxiosMonad)
+
+export const getServerSideProps = withAxios<Props>(async ({ get }, ctx) => {
+  const id = ctx.query.id
+  const apiRes = await get('xxx', {
+    params: { id },
+  })
+  return {
+    data: apiRes.data,
+  }
+})
 ```
 
 > Author: saber2pr
